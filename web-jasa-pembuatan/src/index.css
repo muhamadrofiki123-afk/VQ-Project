@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+/* ── ANiMASi TEXT MASKING PREMIUM VQ PROJECT ── */
+.text-mask-wrapper {
+  overflow: hidden;
+  display: inline-block;
+  padding-bottom: 20px; /* Memberikan ruang ekstra ke bawah agar ekor huruf g, p, y tidak terpotong */
+  margin-bottom: -20px; /* Menetralkan kembali jarak vertikal antar baris agar teks tetap rapi */
+  vertical-align: bottom; /* Memastikan teks sejajar secara presisi */
+}
+
+
+.animate-text-mask {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(110%);
+  animation: textRevealMask 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes textRevealMask {
+  0% {
+    opacity: 0;
+    transform: translateY(110%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ── ANIMASI TOMBOL GOYANG (CALL TO ACTION) ── */
+.animate-goyang {
+  animation: goyang-cta 2.5s infinite;
+}
+
+@keyframes goyang-cta {
+  0%, 80%, 100% { 
+    transform: scale(1) rotate(0deg); 
+  }
+  85% { 
+    transform: scale(1.05) rotate(-3deg); 
+  }
+  90% { 
+    transform: scale(1.05) rotate(3deg); 
+  }
+  95% { 
+    transform: scale(1.05) rotate(-3deg); 
+  }
+}
