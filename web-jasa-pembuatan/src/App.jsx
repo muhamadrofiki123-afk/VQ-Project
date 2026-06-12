@@ -45,7 +45,7 @@ function RenderBintang({ rating }) {
 const paketHarga = [
   {
     nama: 'Starter',
-    harga: 'Rp 1.500.000',
+    harga: 'Rp 150.000',
     subtitle: 'Untuk bisnis yang baru memulai',
     warna: 'from-blue-400 to-[#2F7BFF]',
     fitur: [
@@ -60,7 +60,7 @@ const paketHarga = [
   },
   {
     nama: 'Professional',
-    harga: 'Rp 3.500.000',
+    harga: 'Rp 300.000',
     subtitle: 'Paling populer untuk bisnis berkembang',
     warna: 'from-[#2F7BFF] to-[#8A1FFF]',
     fitur: [
@@ -179,7 +179,7 @@ function App() {
   const [emailKlien, setEmailKlien] = useState('')
   const [waKlien, setWaKlien] = useState('')
   const [jenisLayanan, setJenisLayanan] = useState('Company Profile')
-  const [budget, setBudget] = useState('Rp 1.5 Juta - Rp 3 Juta')
+  const [budget, setBudget] = useState('Rp 100.000 - Rp 300.000')
   const [pesanProyek, setPesanProyek] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
