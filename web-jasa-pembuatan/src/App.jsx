@@ -161,6 +161,7 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [showBackToTop, setShowBackToTop] = useState(false)
   const [jumlahPengunjung, setJumlahPengunjung] = useState(0)
+  const [pesanNotif, setPesanNotif] = useState(null);
   
   // STATE ROUTING MANUAL
   const [currentPage, setCurrentPage] = useState('landing') // 'landing', 'dashboard', 'privacy', 'terms'
