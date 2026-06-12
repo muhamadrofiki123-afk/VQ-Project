@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { auth, logInWithGoogle, logOut, registerWithEmail, loginWithEmail, db } from './firebase'
 import { onAuthStateChanged, updateProfile, } from 'firebase/auth'
-import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore'
 import emailjs from '@emailjs/browser'
 
 // ─── KOMPONEN TOAST NOTIFIKASI ────────────────────────────────────────────────
@@ -160,6 +160,7 @@ function App() {
   const [isRegistering, setIsRegistering] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [showBackToTop, setShowBackToTop] = useState(false)
+  const [jumlahPengunjung, setJumlahPengunjung] = useState(0)
   
   // STATE ROUTING MANUAL
   const [currentPage, setCurrentPage] = useState('landing') // 'landing', 'dashboard', 'privacy', 'terms'
@@ -224,6 +225,36 @@ function App() {
   // ─── Effect: Auth listener, scroll listener, ulasan fetch ─────────────────
   useEffect(() => {
     ambilUlasan()
+    
+    // ── MESIN PENGHITUNG PENGUNJUNG ──
+    const catatPengunjung = async () => {
+      try {
+        const refKunjungan = doc(db, 'statistik', 'kunjungan')
+        const snapKunjungan = await getDoc(refKunjungan)
+        
+        // Jika database belum ada, buat baru mulai dari 1
+        if (!snapKunjungan.exists()) {
+          await setDoc(refKunjungan, { total: 1 })
+          setJumlahPengunjung(1)
+          localStorage.setItem('vq_visited', 'true')
+        } else {
+          // Cek apakah pengunjung ini baru atau cuma refresh halaman
+          const sudahPernahMampir = localStorage.getItem('vq_visited')
+          if (!sudahPernahMampir) {
+            // Jika pengunjung baru, tambah +1 ke database
+            await updateDoc(refKunjungan, { total: increment(1) })
+            localStorage.setItem('vq_visited', 'true')
+            setJumlahPengunjung(snapKunjungan.data().total + 1)
+          } else {
+            // Jika cuma refresh, tampilkan angka terakhir tanpa menambah
+            setJumlahPengunjung(snapKunjungan.data().total)
+          }
+        }
+      } catch (error) {
+        console.error("Gagal mencatat pengunjung:", error)
+      }
+    }
+    catatPengunjung()
 
     // Auth listener
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -1348,7 +1379,16 @@ function App() {
           </div>
 
           <div className="border-t border-white/20 pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
-            <p className="text-xs font-medium text-white/50">&copy; {new Date().getFullYear()} VQ Project. Hak Cipta Dilindungi.</p>
+            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+              <p className="text-xs font-medium text-white/50">&copy; {new Date().getFullYear()} VQ Project. Hak Cipta Dilindungi.</p>
+              {/* Indikator Pengunjung */}
+              <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                <p className="text-[10px] text-white/70 font-bold tracking-wide">
+                  TOTAL KUNJUNGAN: <span className="text-white">{jumlahPengunjung.toLocaleString('id-ID')}</span>
+                </p>
+              </div>
+            </div>
             <div className="flex space-x-5">
               <button onClick={() => navigateTo('privacy')} className="text-[10px] text-white/50 hover:text-white transition uppercase tracking-wide focus:outline-none focus:text-white">Kebijakan Privasi</button>
               <button onClick={() => navigateTo('terms')} className="text-[10px] text-white/50 hover:text-white transition uppercase tracking-wide focus:outline-none focus:text-white">Syarat & Ketentuan</button>
